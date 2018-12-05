@@ -14,6 +14,28 @@ int remidx(char *s, size_t start, size_t end)
     memmove(&s[start], &s[end], strlen(s) + 1 - end); 
 }
 
+int collapse(char *polymer)
+{
+    size_t len = strlen(polymer);
+    int i = 0;
+    while (i < len)
+    {
+        if (abs(polymer[i] - polymer[i + 1]) == abs('A' - 'a'))
+        {
+            remidx(polymer, i, i + 2); 
+            i--;
+            if (i < 0)
+                i = 0;
+            len -= 2;
+        }
+        else
+        {
+            i++;
+        }
+    }
+    return len;
+}
+
 int main()
 {
     FILE *input = fopen("input", "r");
@@ -37,21 +59,32 @@ int main()
     }
     buf[i] = 0;
     len = strlen(buf);
-    i = 0;
-    while (i < len)
+    char *bufcopy = malloc(len);
+    bufcopy = strcpy(bufcopy, buf);
+    printf("Part 1 Answer:\n%d\n", collapse(bufcopy));
+
+    int min_length;
+    char c;
+    for (c = 'A'; c <= 'Z'; c++)
     {
-        if (abs(buf[i] - buf[i + 1]) == abs('A' - 'a'))
+        int i = 0;
+        len = strlen(buf);
+        bufcopy = strcpy(bufcopy, buf);
+        while (i < len)
         {
-            memmove(&buf[i], &buf[i + 2], len + 1 - (i + 2));
-            i -= 2;
-            if (i < 0)
-                i = 0;
-            len -= 2;
+            if (bufcopy[i] == c || bufcopy[i] - 32 == c)
+            {
+                remidx(bufcopy, i, i + 1); 
+                len--;
+            }
+            else
+            {
+                i++;
+            }
         }
-        else
-        {
-            i++;
-        }
+        int res = collapse(bufcopy);
+        if (c == 'A' || res < min_length)
+            min_length = res;
     }
-    printf("Part 1 Answer:\n%ld\n", strlen(buf));
+    printf("Part 2 Answer:\n%d\n", min_length);
 }
