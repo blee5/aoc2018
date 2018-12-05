@@ -3,6 +3,8 @@
 #include <stdio.h>
 #include <unistd.h>
 
+int 
+
 int main()
 {
     int freq = 0;
@@ -18,4 +20,11 @@ int main()
     printf("Part 1 Answer:\n%d\n", freq);
 
     // TODO: Improved part2
+    int offset = freqs[len - 1];
+    int i;
+    int **modgroup = malloc(2d array shit);
+    for (i; i < len; i++)
+    {
+        modgroup[freqs[i] % offset][] = );
+    }
 }
