@@ -10,15 +10,13 @@ int main()
 {
     FILE *input = fopen("input", "r");
     char buf[256];
-    char *buf_p;
     int fabric[fabric_size][fabric_size];
-    memset(fabric, 0, sizeof(fabric[0][0]) * fabric_size * fabric_size);
+    memset(fabric, 0, sizeof(int[0][0]) * fabric_size * fabric_size);
     int i, j;
     int id, x, y, height, width;
     while (fgets(buf, 256, input))
     {
-        buf_p = buf;
-        sscanf(buf_p, "#%*d @ %d,%d: %dx%d", 
+        sscanf(buf, "#%*d @ %d,%d: %dx%d", 
             &x, &y, &height, &width); 
         for (i = height; i > 0; i--)
         {
@@ -44,8 +42,7 @@ int main()
     loop:
     while (fgets(buf, 256, input))
     {
-        buf_p = buf;
-        sscanf(buf_p, "#%d @ %d,%d: %dx%d", 
+        sscanf(buf, "#%d @ %d,%d: %dx%d", 
             &id, &x, &y, &height, &width); 
         for (i = height; i > 0; i--)
         {
