@@ -4,36 +4,57 @@
 #include <string.h>
 #include <unistd.h>
 
-/*
- * Remove part of a string.
- * Specifically, removes [start, end)
- */
-int remidx(char *s, size_t start, size_t end)
+struct stack {
+    char arr[50000];
+    int count;
+};
+
+void push(struct stack *s, char c)
 {
-    /* Add 1 to copy the null terminator as well */
-    memmove(&s[start], &s[end], strlen(s) + 1 - end); 
+    s->arr[s->count++] = c;
 }
 
-int collapse(char *polymer)
+char peek(struct stack *s)
 {
+    if (s->count == 0)
+    {
+        return 0;
+    }
+    return s->arr[s->count - 1];
+}
+
+char pop(struct stack *s)
+{
+    if (s->count == 0)
+    {
+        return 0;
+    }
+    return s->arr[--(s->count)];
+}
+
+int collapse(char *polymer, char ignore)
+{
+    struct stack s;
+    s.count = 0;
     size_t len = strlen(polymer);
     int i = 0;
-    while (i < len)
+    for (i = 0; i < len; i++)
     {
-        if (abs(polymer[i] - polymer[i + 1]) == abs('A' - 'a'))
+        char c = polymer[i];
+        if (c == ignore || c - 32 == ignore)
         {
-            remidx(polymer, i, i + 2); 
-            i--;
-            if (i < 0)
-                i = 0;
-            len -= 2;
+            continue;
+        }
+        if (abs(c - peek(&s)) == abs('A' - 'a'))
+        {
+            pop(&s);
         }
         else
         {
-            i++;
+            push(&s, c);
         }
     }
-    return len;
+    return s.count;
 }
 
 int main()
@@ -42,14 +63,10 @@ int main()
 
     size_t len = 200;
     char *buf = malloc(len);
-    int i = 0;
-    for (;;)
+    int i;
+    int c = fgetc(input);
+    for (i = 0; c != EOF && c != '\n'; c = fgetc(input))
     {
-        int c = fgetc(input);
-        if (c == EOF || c == '\n')
-        {
-            break;
-        }
         buf[i++] = c;
         if (i >= len)
         {
@@ -58,31 +75,13 @@ int main()
         }
     }
     buf[i] = 0;
-    len = strlen(buf);
-    char *bufcopy = malloc(len);
-    bufcopy = strcpy(bufcopy, buf);
-    printf("Part 1 Answer:\n%d\n", collapse(bufcopy));
+
+    printf("Part 1 Answer:\n%d\n", collapse(buf, 0));
 
     int min_length;
-    char c;
     for (c = 'A'; c <= 'Z'; c++)
     {
-        int i = 0;
-        len = strlen(buf);
-        bufcopy = strcpy(bufcopy, buf);
-        while (i < len)
-        {
-            if (bufcopy[i] == c || bufcopy[i] - 32 == c)
-            {
-                remidx(bufcopy, i, i + 1); 
-                len--;
-            }
-            else
-            {
-                i++;
-            }
-        }
-        int res = collapse(bufcopy);
+        int res = collapse(buf, c);
         if (c == 'A' || res < min_length)
             min_length = res;
     }
