@@ -115,6 +115,12 @@ int main()
     printf("Part 1 Answer:\n%d\n", max_area);
 
     int safe_area = 0;
+    /*
+     * BUG:
+     * Technically it's possible for a point outside the bounding box to be a safe zone,
+     * even if the input is valid for part 1.
+     * For example: (0, 0) (0, 5) (5, 0) (5, 5) (3, 3)
+     */
     for (y = 0; y <= max_y; y++)
     {
         for (x = 0; x <= max_x; x++)
