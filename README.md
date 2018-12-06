@@ -1,7 +1,7 @@
 # AOC 2018 Solutions
 
 Written in C (because I hate myself).
-Not the best solutions, but they work (at least for my inputs..)
+They're all naive and not the best solutions, but they work (at least for my inputs..)
 
 Check out [Advent of Code!](https://adventofcode.com/)
 
