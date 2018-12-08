@@ -166,11 +166,10 @@ int run_workers()
                     break;
             }
             if (i == NUM_WORKERS)
-                break;
+                return total_t;
         }
         total_t++;
     }
-    return total_t;
 }
 
 /*
