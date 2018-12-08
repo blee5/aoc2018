@@ -3,6 +3,8 @@
 #include <stdio.h>
 #include <string.h>
 
+#define NUM_WORKERS 5
+
 struct step
 {
     char name;
@@ -13,6 +15,7 @@ struct step
 
 struct step *steps[26];
 struct step **available;
+struct step *seq[26];
 
 void append(struct step **list, struct step *s)
 {
@@ -93,9 +96,86 @@ void run()
             }
         }
         del(available, s);
-        printf("%c", s->name);
+        append(seq, s);
     }
 }
+
+/*
+ * Part 2 
+ */
+
+struct worker
+{
+    struct step *task;
+    int t;
+};
+
+struct worker workers[NUM_WORKERS];
+
+struct worker *get_idle()
+{
+    int i;
+    for (i = 0; i < NUM_WORKERS; i++)
+    {
+        if (workers[i].task == NULL)
+        {
+            return &workers[i];
+        }
+    }
+    return NULL;
+}
+
+int run_workers()
+{
+    int total_t = 0;
+    while (1)
+    {
+        int i;
+        for (i = 0; i < NUM_WORKERS; i++)
+        {
+            if (--workers[i].t == 0)
+            {
+                workers[i].task->is_done = 1;
+                int j;
+                for (j = 0; workers[i].task->prereq_for[j]; j++)
+                {
+                    if (prereq_met(workers[i].task->prereq_for[j]))
+                        append(available, workers[i].task->prereq_for[j]);
+                }
+                workers[i].task = NULL;
+                workers[i].t = -1;
+            }
+        }
+        while (available[0])
+        {
+            struct worker *w = get_idle();
+            if (w == NULL)
+                break;
+            struct step *s = get_first();
+            w->task = s;
+            w->t = s->name - 'A' + 1 + 60;
+            del(available, s);
+        }
+
+        /* If all the workers aren't doing anything, the job is done! */
+        if (available[0] == NULL)
+        {
+            for (i = 0; i < NUM_WORKERS; i++)
+            {
+                if (workers[i].task != NULL)
+                    break;
+            }
+            if (i == NUM_WORKERS)
+                break;
+        }
+        total_t++;
+    }
+    return total_t;
+}
+
+/*
+ * End Part 2
+ */
 
 int main()
 {
@@ -109,6 +189,7 @@ int main()
     available = calloc(26, sizeof(struct step **));
     memset(available, 0, 10 * sizeof(struct step **));
     memset(steps, 0, 26 * sizeof(struct step **));
+    memset(seq, 0, 26 * sizeof(struct step **));
     while (fgets(buf, 256, input))
     {
         // Read file
@@ -129,7 +210,25 @@ int main()
     }
     printf("Part 1 Answer:\n");
     run();
+    for (i = 0; seq[i]; i++)
+    {
+        printf("%c", seq[i]->name);
+    }
     printf("\n");
 
-    /* printf("Part 2 Answer:\n%d\n", -1); */
+    /* Reset for part 2 */
+    for (i = 0; i < 26; i++)
+    {
+        if (steps[i] && steps[i]->prereq[0] == NULL)
+        {
+            append(available, steps[i]);
+        }
+        steps[i]->is_done = 0;
+    }
+    for (i = 0; i < NUM_WORKERS; i++)
+    {
+        workers[i].task = NULL;
+        workers[i].t = -1;
+    }
+    printf("Part 2 Answer:\n%d\n", run_workers());
 }
