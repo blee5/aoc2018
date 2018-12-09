@@ -36,7 +36,7 @@ long pop(struct node *n)
     return temp;
 }
 
-long marble(long p_count, long f_marble)
+long marble_game(long p_count, long f_marble)
 {
     struct node z = {0, &z, &z};
     struct node *cur_marble = &z;
@@ -77,6 +77,6 @@ long main()
     int players = 419;
     int last_marble = 72164;
 
-    printf("Part 1 Answer:\n%ld\n", marble(players, last_marble));
-    printf("Part 2 Answer:\n%ld\n", marble(players, last_marble * 100));
+    printf("Part 1 Answer:\n%ld\n", marble_game(players, last_marble));
+    printf("Part 2 Answer:\n%ld\n", marble_game(players, last_marble * 100));
 }

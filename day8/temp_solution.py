@@ -1,4 +1,4 @@
-with open("input", 'r') as f:
+wkaith open("input", 'r') as f:
     data = map(int, f.read().split())
 
 def checksum(i):
