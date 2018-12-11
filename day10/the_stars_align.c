@@ -74,8 +74,8 @@ int main()
     }
 
     int maxx, minx, maxy, miny;
-    int prev_xbound = -1;
-    int prev_ybound = -1;
+    int x_bound, prev_xbound = -1;
+    int y_bound, prev_ybound = -1;
     int disp_count = 5;
     int j;
     printf("Printing 5 likely candidates...\n");
@@ -97,14 +97,16 @@ int main()
             if (x < minx)
                 minx = x;
         }
-        if (prev_xbound != -1 && maxx-minx > prev_xbound && maxy-miny > prev_ybound)
+        x_bound = maxx - minx + 1;
+        y_bound = maxy - miny + 1;
+        if (prev_xbound != -1 && x_bound > prev_xbound && y_bound > prev_ybound)
         {
             disp_sky(i - 1);
             if (--disp_count == 0)
                 break;
             getchar();
         }
-        prev_xbound = maxx-minx;
-        prev_ybound = maxy-miny;
+        prev_xbound = x_bound;
+        prev_ybound = y_bound;
     }
 }
