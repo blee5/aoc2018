@@ -50,14 +50,15 @@ int main()
         }
         int found_two = 0;
         int found_three = 0;
-        for (i = 0; i < 256; i++)
+        for (i = 0; i < buf[i]; i++)
         {
-            if (!found_two && charmap[i] == 2)
+            unsigned char c = buf[i];
+            if (!found_two && charmap[c] == 2)
             {
                 found_two = 1;
                 rep_two_count++;
             }
-            if (!found_three && charmap[i] == 3)
+            if (!found_three && charmap[c] == 3)
             {
                 found_three = 1;
                 rep_three_count++;
