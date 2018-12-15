@@ -49,11 +49,9 @@ def sum_pots(pots, zero):
 
 zero, prev_zero = 0, 0
 prev_pots = []
-for i in range(50000000000):
+for i in range(200000):
     # All are inputs guaranteed to converge into an identical sequence that just shifts?
     # I doubt it, but at least it works for my case..
-    if prev_pots == pots:
-        break;
 
     prev_zero = zero
     prev_pots = pots.copy()
@@ -66,15 +64,16 @@ for i in range(50000000000):
             if pots[j - 2: j + 3] == rule[0]:
                 temp_pots[j] = rule[1]
     # Trim
-    for j in range(5):
-        while temp_pots[0] == '.':
-            zero -= 1
-            temp_pots = temp_pots[1:]
-    for j in range(5):
-        while temp_pots[-1] == '.':
-            temp_pots = temp_pots[:-1]
+    while temp_pots[0] == '.':
+        zero -= 1
+        temp_pots = temp_pots[1:]
+    while temp_pots[-1] == '.':
+        temp_pots = temp_pots[:-1]
 
     pots = temp_pots
+    if prev_pots == pots:
+        print(zero, prev_zero)
+        break;
 
     if i == 19:
         print("Part 1 Answer:\n" + str(sum_pots(pots, zero)))
